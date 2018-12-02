@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Cell
+  - Mine
+  - Number
+  - Fog
+  - Flag
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - BackgroundLayer
+  - ObjectsLayer
+  - EnemyLayer
+  - FogLayer
+  - FlagLayer
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 4079892755
+    locked: 0
+  - name: Objects
+    uniqueID: 2666512641
+    locked: 0
+  - name: Enemies
+    uniqueID: 3754454169
+    locked: 0
+  - name: Fog
+    uniqueID: 3022041833
+    locked: 0
+  - name: Flag
+    uniqueID: 886379605
+    locked: 0
