@@ -9,6 +9,7 @@ public class Cell : MonoBehaviour {
     public bool dangerous = false;
     private GameObject flag;
     private GameController controller;
+    private bool cellEnabled = true;
 
     public void Init(int row, int column) {
         this.row = row;
@@ -16,7 +17,29 @@ public class Cell : MonoBehaviour {
         this.name = "Cell_" + row + "_" + column;
         this.flag = Instantiate(Resources.Load("Flag") as GameObject, transform.position, Quaternion.identity, transform);
         this.flag.SetActive(false);
-        this.controller = GameObject.FindWithTag("GameController").GetComponent<GameController>();
+        this.controller = GameController.instance;
+    }
+
+    public bool LeftClicked() {
+        if (cellEnabled && !visible && !flagged) {
+            Reveal();
+            return true;
+        }
+        return false;
+    }
+
+    public bool RightClicked() {
+        if (cellEnabled && !visible) {
+            if (!flagged) {
+                Flag();
+                return true;
+            }
+            else if (flagged) {
+                Unflag();
+                return true;
+            }
+        }
+        return false;
     }
 
     public void Reveal() {
@@ -37,12 +60,12 @@ public class Cell : MonoBehaviour {
     }
 
     public void GameOverReveal() {
-        Debug.Log("Reveal");
         if (!visible && !flagged) {
             Fog fog = GetComponentInChildren<Fog>();
             if (fog != null) {
                 fog.Destroy();
             }
         }
+        cellEnabled = false;
     }
 }

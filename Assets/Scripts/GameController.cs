@@ -1,6 +1,18 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
+
+
+    public static GameController instance = null;
+
+    void Awake() {
+        if (instance == null)
+            instance = this;
+        else if (instance != this)           
+            Destroy(gameObject);
+        DontDestroyOnLoad(gameObject);
+    }
 
     public GameObject cell;
     public GameObject mine;
@@ -33,17 +45,15 @@ public class GameController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        Debug.Log("gameOver " + gameOver);
 		if (gameOver && !boardRevealed) {
-            Debug.Log("entra");
-            Debug.Log(GameObject.FindGameObjectsWithTag("Cell"));
             foreach (GameObject cell in GameObject.FindGameObjectsWithTag("Cell")) {
                 cell.GetComponent<Cell>().GameOverReveal();
             }
             boardRevealed = true;
+            GameUIController.instance.Show("Game Lost", Color.red);
         }
         else if (gameWon) {
-            Debug.Log("Game Won");
+            GameUIController.instance.Show("Game Won", Color.green);
         }
 	}
 
@@ -58,7 +68,6 @@ public class GameController : MonoBehaviour {
     }
 
     public void cellRevealed(bool wasDanger) {
-        Debug.Log(wasDanger);
         revealedCells++;
         gameOver = wasDanger;
         CheckGameWon();

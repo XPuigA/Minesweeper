@@ -19,7 +19,7 @@ public class Labeller : MonoBehaviour {
     private static void SetLabel(GameObject cell, int numberOfDangers) {
         Cell cellScript = cell.GetComponent<Cell>();
         cellScript.numberOfSurroundingDangers = numberOfDangers;
-        if (!cellScript.dangerous) {
+        if (!cellScript.dangerous && numberOfDangers > 0) {
             GameObject number = Instantiate(Resources.Load("numbers/" + numberOfDangers.ToString()) as GameObject, cell.transform.position, Quaternion.identity, cell.transform);
         }
     }

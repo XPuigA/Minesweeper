@@ -9,6 +9,7 @@ TagManager:
   - Number
   - Fog
   - Flag
+  - EndGameText
   layers:
   - Default
   - TransparentFX
@@ -60,4 +61,7 @@ TagManager:
     locked: 0
   - name: Flag
     uniqueID: 886379605
+    locked: 0
+  - name: UI
+    uniqueID: 1557064555
     locked: 0
