@@ -8,6 +8,7 @@ public class Cell : MonoBehaviour {
     public bool visible = false;
     public bool dangerous = false;
     private GameObject flag;
+    private GameObject fog;
     private GameController controller;
     private bool cellEnabled = true;
 
@@ -17,34 +18,33 @@ public class Cell : MonoBehaviour {
         this.name = "Cell_" + row + "_" + column;
         this.flag = Instantiate(Resources.Load("Flag") as GameObject, transform.position, Quaternion.identity, transform);
         this.flag.SetActive(false);
+        this.fog = Instantiate(Resources.Load("Fog") as GameObject, transform.position, Quaternion.identity, transform);
+        this.fog.SetActive(true);
         this.controller = GameController.instance;
     }
 
-    public bool LeftClicked() {
+    public void LeftClicked() {
         if (cellEnabled && !visible && !flagged) {
             Reveal();
-            return true;
         }
-        return false;
     }
 
-    public bool RightClicked() {
+    public void RightClicked() {
         if (cellEnabled && !visible) {
             if (!flagged) {
                 Flag();
-                return true;
             }
             else if (flagged) {
                 Unflag();
-                return true;
             }
         }
-        return false;
     }
 
     public void Reveal() {
         visible = true;
-        controller.cellRevealed(dangerous);
+        this.fog.SetActive(false);
+        controller.cellRevealed(this);
+        if (flagged) Unflag();
     }
 
     public void Flag() {
@@ -61,10 +61,7 @@ public class Cell : MonoBehaviour {
 
     public void GameOverReveal() {
         if (!visible && !flagged) {
-            Fog fog = GetComponentInChildren<Fog>();
-            if (fog != null) {
-                fog.Destroy();
-            }
+            this.fog.SetActive(false);
         }
         cellEnabled = false;
     }

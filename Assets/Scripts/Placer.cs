@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class Placer : MonoBehaviour {
 
-    public static void PlaceEnemies(string tag, int numberOfObjectsToPlace, GameObject objectToInstantiate) {
-        GameObject[] cellList = GameObject.FindGameObjectsWithTag(tag);
+    public static void PlaceEnemies(GameObject[] cellList, int numberOfObjectsToPlace, GameObject objectToInstantiate) {
         int size = cellList.Length;
         Random.Range(0, size);
         HashSet<int> placed = new HashSet<int>();
@@ -20,13 +19,6 @@ public class Placer : MonoBehaviour {
             }
             else {
             }
-        }
-    }
-
-    public static void PlaceFog(string tag, GameObject objectToInstantiate) {
-        GameObject[] cellList = GameObject.FindGameObjectsWithTag(tag);
-        foreach(GameObject cell in cellList) {
-            Instantiate(objectToInstantiate, cell.transform.position, Quaternion.identity, cell.transform);
         }
     }
 }

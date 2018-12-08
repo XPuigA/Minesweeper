@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
+using System.Collections.Generic;
 
 public class GameController : MonoBehaviour {
-
 
     public static GameController instance = null;
 
@@ -29,12 +30,15 @@ public class GameController : MonoBehaviour {
     private bool boardRevealed;
     private bool gameWon;
 
+    private Dictionary<string, Cell> map;
+
 	// Use this for initialization
 	void Start () {
         GameObject boardContainer = Generator.Generate(cell, numberOfRows, numberOfColumns);
-        Placer.PlaceEnemies("Cell", numberOfMines, mine);
-        Labeller.Label("Cell", numberOfRows, numberOfColumns);
-        Placer.PlaceFog("Cell", fog);
+        GameObject[] cellList = FindByTag("Cell");
+        map = fillMap(cellList);
+        Placer.PlaceEnemies(cellList, numberOfMines, mine);
+        Labeller.Label(map, numberOfRows, numberOfColumns);
         flaggedCells = 0;
         totalCells = numberOfRows * numberOfColumns;
         revealedCells = 0;
@@ -46,7 +50,7 @@ public class GameController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (gameOver && !boardRevealed) {
-            foreach (GameObject cell in GameObject.FindGameObjectsWithTag("Cell")) {
+            foreach (GameObject cell in FindByTag("Cell")) {
                 cell.GetComponent<Cell>().GameOverReveal();
             }
             boardRevealed = true;
@@ -57,23 +61,52 @@ public class GameController : MonoBehaviour {
         }
 	}
 
+    GameObject[] FindByTag(string tag) {
+        return GameObject.FindGameObjectsWithTag(tag);
+    }
+
+    private Dictionary<string, Cell> fillMap(GameObject[] cellList) {
+        Dictionary<string, Cell> result = new Dictionary<string, Cell>();
+        foreach (GameObject cellGO in cellList) {
+            Cell cell = cellGO.GetComponent<Cell>();
+            result.Add(cell.row + "_" + cell.column, cell);
+        }
+        return result;
+    }
+
     public void cellFlagged() {
         flaggedCells++;
         CheckGameWon();
     }
 
     public void cellUnflagged() {
-        flaggedCells++;
+        flaggedCells--;
         CheckGameWon();
     }
 
-    public void cellRevealed(bool wasDanger) {
+    public void cellRevealed(Cell cell) {
         revealedCells++;
-        gameOver = wasDanger;
+        gameOver = cell.dangerous;
         CheckGameWon();
+        if (!gameOver && cell.numberOfSurroundingDangers == 0) {
+            RevealSurroundingZeroes(cell);
+        }
     }
 
     public void CheckGameWon() {
+        Debug.Log(flaggedCells);
         gameWon = !gameOver && revealedCells + flaggedCells == totalCells;
+    }
+
+    private void RevealSurroundingZeroes(Cell originCell) {      
+        for (int i = 0; i < Directions.row.Length; ++i) {
+            Cell nextCell;
+            string cellId = (originCell.row + Directions.row[i]) + "_" + (originCell.column + Directions.column[i]);
+            if (map.TryGetValue(cellId, out nextCell)) {
+                if (!nextCell.visible) {
+                    nextCell.Reveal();
+                }
+            }
+        }
     }
 }
